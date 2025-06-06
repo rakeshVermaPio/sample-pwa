@@ -40,6 +40,9 @@ dependencies:
   riverpod_annotation: ^2.6.1
   http: ^1.4.0
   connectivity_plus: ^6.1.4
+  freezed: ^3.0.6
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +58,7 @@ dev_dependencies:
   custom_lint:
   riverpod_generator: ^2.6.1
   riverpod_lint: ^2.6.1
+  json_serializable:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
