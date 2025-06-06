@@ -1,30 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sample_pwa/counts/data/count_repository.dart';
 
-class CountPage extends StatefulWidget {
-  const CountPage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<CountPage> createState() => _CountPageState();
-}
-
-class _CountPageState extends State<CountPage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class CountPage extends HookConsumerWidget {
+  const CountPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterNotifierProvider);
+    final countNotifier = ref.watch(counterNotifierProvider.notifier);
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -33,14 +19,14 @@ class _CountPageState extends State<CountPage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter',
+              '$count',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => countNotifier.refresh(count + 1),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
