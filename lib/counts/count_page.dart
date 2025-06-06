@@ -7,8 +7,7 @@ class CountPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterNotifierProvider);
-    final countNotifier = ref.watch(counterNotifierProvider.notifier);
+    final count = ref.watch(counterProvider);
 
     return Scaffold(
       body: Center(
@@ -26,7 +25,7 @@ class CountPage extends HookConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => countNotifier.refresh(count + 1),
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
