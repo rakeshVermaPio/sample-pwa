@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sample_pwa/counts/data/count_repository.dart';
+import 'package:sample_pwa/counts/data/count_providers.dart';
 import 'package:simple_web_camera/simple_web_camera.dart';
 
 class CountPage extends HookConsumerWidget {
@@ -11,8 +11,6 @@ class CountPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterProvider);
-
     final cameraImagePath = useState('');
 
     return Scaffold(
@@ -44,11 +42,16 @@ class CountPage extends HookConsumerWidget {
                 child: Image.memory(base64Decode(cameraImagePath.value)),
               )
             },
+            ElevatedButton.icon(
+              onPressed: () async {},
+              label: const Text('Get Location!'),
+              icon: const Icon(Icons.location_pin),
+            ),
             const Text(
               'You have pushed the button this many times:',
             ),
             Text(
-              '$count',
+              '${ref.watch(counterProvider)}',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sample_pwa/auth/auth_data.dart';
-import 'package:sample_pwa/auth/auth_repository.dart';
+import 'package:sample_pwa/auth/auth_providers.dart';
 import 'package:sample_pwa/auth/login/data/login_model.dart';
-import 'package:sample_pwa/auth/login/data/login_repository.dart';
+import 'package:sample_pwa/auth/login/data/login_providers.dart';
 import 'package:sample_pwa/common_widgets/flutter_custom_logo.dart';
 import 'package:sample_pwa/counts/count_page.dart';
 

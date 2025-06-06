@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sample_pwa/auth/login/data/login_api_service.dart';
 import 'package:sample_pwa/auth/login/data/login_model.dart';
 
-part 'login_repository.g.dart';
+part 'login_providers.g.dart';
 
 @riverpod
 Future<LoginResponse> login(Ref ref, LoginParam loginParam) async {

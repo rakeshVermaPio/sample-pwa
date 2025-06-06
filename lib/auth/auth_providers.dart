@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sample_pwa/auth/auth_data.dart';
 
-part 'auth_repository.g.dart';
+part 'auth_providers.g.dart';
 
 @riverpod
 class AuthDataNotifier extends _$AuthDataNotifier {
