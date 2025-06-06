@@ -17,6 +17,9 @@ class App extends StatelessWidget {
             useMaterial3: true,
           ),
           home: ConnectivityContainer(child: LoginPage()),
+          builder: (BuildContext context, Widget? child) {
+            return ConnectivityContainer(child: child ?? LoginPage());
+          },
         );
       },
     );

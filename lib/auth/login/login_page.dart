@@ -74,13 +74,16 @@ class LoginPage extends HookConsumerWidget {
                                 ref
                                     .read(authDataNotifierProvider.notifier)
                                     .refreshState(authData);
-                                
-                                const snackBar = SnackBar(content: Text('YaY! Logged In'));
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                const snackBar =
+                                    SnackBar(content: Text('YaY! Logged In'));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
 
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const CountPage(title: 'title')),
+                                  MaterialPageRoute(
+                                      builder: (context) => const CountPage()),
                                 );
                               }
                               loading.value = false;
@@ -100,19 +103,5 @@ class LoginPage extends HookConsumerWidget {
                 }
               ],
             )));
-  }
-
-  void _onLoginPressed(WidgetRef ref, String userName) async {
-    // switch(resAsyncValue){
-    //   case AsyncLoading<LoginResponse>():{
-    //     print('AsyncLoading<LoginResponse>');
-    //   }
-    //   case AsyncError<LoginResponse>():{
-    //     print('AsyncError<LoginResponse>');
-    //   }
-    //   case AsyncData<LoginResponse>():{
-    //     print('AsyncData<LoginResponse>');
-    //   }
-    // }
   }
 }
