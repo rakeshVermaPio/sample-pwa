@@ -1,16 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sample_pwa/auth/login/data/login_model.dart';
-
-part 'login_api_service.g.dart';
-
-@riverpod
-LoginApiService loginApiService(Ref ref) {
-  return LoginApiService();
-}
 
 class LoginApiService {
   Future<LoginResponse> login(LoginParam loginParam) async {

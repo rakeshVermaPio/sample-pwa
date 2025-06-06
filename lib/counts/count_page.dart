@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sample_pwa/auth/helpers/snackbar_helpers.dart';
 import 'package:sample_pwa/counts/data/count_providers.dart';
+import 'package:sample_pwa/location/location_providers.dart';
+import 'package:sample_pwa/location/location_service.dart';
 import 'package:simple_web_camera/simple_web_camera.dart';
 
 class CountPage extends HookConsumerWidget {
@@ -12,6 +15,8 @@ class CountPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cameraImagePath = useState('');
+    final currentLat = useState(0.0);
+    final currentLng = useState(0.0);
 
     return Scaffold(
       body: Center(
@@ -43,10 +48,20 @@ class CountPage extends HookConsumerWidget {
               )
             },
             ElevatedButton.icon(
-              onPressed: () async {},
+              onPressed: () => _getLocation(
+                  ref: ref,
+                  onLocationFetched: (double lat, double lng) {
+                    currentLat.value = lat;
+                    currentLng.value = lng;
+                  }),
               label: const Text('Get Location!'),
               icon: const Icon(Icons.location_pin),
             ),
+            if (currentLat.value != 0.0 && currentLng.value != 0.0) ...{
+              Text(
+                'Current Lat:${currentLat.value} & Lng:${currentLng.value}',
+              )
+            },
             const Text(
               'You have pushed the button this many times:',
             ),
@@ -63,5 +78,29 @@ class CountPage extends HookConsumerWidget {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _getLocation(
+      {required WidgetRef ref,
+      required Function(double lat, double lng) onLocationFetched}) async {
+    try {
+      final position =
+          await ref.read(locationServiceProvider).determinePosition();
+      onLocationFetched(position.latitude, position.longitude);
+      //
+    } on LocationException catch (e) {
+      final msg = switch (e) {
+        LocationServicesOffException(:final message) =>
+          'Turn on your location. $message',
+        LocationPermissionDeniedException(:final message) =>
+          'Grant permission. $message',
+        LocationPermissionDeniedForeverException(:final message) =>
+          'Open app settings. $message',
+      };
+
+      SnackBarHelpers.showSnackBar(ref.context, msg);
+    } catch (e) {
+      SnackBarHelpers.showSnackBar(ref.context, e.toString());
+    }
   }
 }
