@@ -11,7 +11,6 @@ class ConnectivityContainer extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final connectivityState = ref.watch(connectivityNotifierProvider);
     final connectivityNotifier =
         ref.watch(connectivityNotifierProvider.notifier);
 
@@ -20,16 +19,17 @@ class ConnectivityContainer extends HookConsumerWidget {
       return connectivityNotifier.stopListening;
     }, [connectivityNotifier]);
 
-    return connectivityState.isConnected
-        ? child
-        : ConnectivityNotice(connectivityState);
+    return Stack(children: [
+      child,
+      if (!ref.watch(connectivityNotifierProvider).isConnected) ...{
+        const ConnectivityNotice()
+      }
+    ]);
   }
 }
 
 class ConnectivityNotice extends ConsumerWidget {
-  final ConnectivityState connectivityState;
-
-  const ConnectivityNotice(this.connectivityState, {super.key});
+  const ConnectivityNotice({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
