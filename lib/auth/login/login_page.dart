@@ -8,6 +8,7 @@ import 'package:sample_pwa/auth/login/data/login_model.dart';
 import 'package:sample_pwa/auth/login/data/login_providers.dart';
 import 'package:sample_pwa/common_widgets/flutter_custom_logo.dart';
 import 'package:sample_pwa/counts/count_page.dart';
+import 'package:sample_pwa/local/prefs.dart';
 
 class LoginPage extends HookConsumerWidget {
   static const routeName = 'login';
@@ -75,6 +76,9 @@ class LoginPage extends HookConsumerWidget {
                                 ref
                                     .read(authDataNotifierProvider.notifier)
                                     .refreshState(authData);
+
+                                await ref.read(asyncPrefsProvider).setString(
+                                    Prefs.keyLoginToken, authData.token ?? '');
 
                                 SnackBarHelpers.showSnackBar(
                                     context, 'YaY! Logged In');
