@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sample_pwa/auth/helpers/snackbar_helpers.dart';
 import 'package:sample_pwa/counts/data/count_providers.dart';
+import 'package:sample_pwa/local/prefs.dart';
 import 'package:sample_pwa/location/location_providers.dart';
 import 'package:sample_pwa/location/location_service.dart';
 import 'package:simple_web_camera/simple_web_camera.dart';
@@ -17,6 +18,19 @@ class CountPage extends HookConsumerWidget {
     final cameraImagePath = useState('');
     final currentLat = useState(0.0);
     final currentLng = useState(0.0);
+    final loginToken = useState('Loading...');
+
+    useEffect(() {
+      void loadSavedLoginToken() async {
+        final token =
+            await ref.read(asyncPrefsProvider).getString(Prefs.keyLoginToken);
+        loginToken.value = token ?? 'n/a';
+      }
+
+      loadSavedLoginToken();
+
+      return null;
+    }, []);
 
     return Scaffold(
       body: Center(
@@ -62,6 +76,9 @@ class CountPage extends HookConsumerWidget {
                 'Current Lat:${currentLat.value} & Lng:${currentLng.value}',
               )
             },
+            Text(
+              'Your login token is ${loginToken.value}',
+            ),
             const Text(
               'You have pushed the button this many times:',
             ),
