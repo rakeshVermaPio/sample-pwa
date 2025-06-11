@@ -86,7 +86,7 @@ class LoginPage extends HookConsumerWidget {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CountPage()),
+                                      builder: (context) => const CountPage()),
                                 );
                               }
                               loading.value = false;

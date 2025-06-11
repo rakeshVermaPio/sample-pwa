@@ -5,9 +5,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sample_pwa/auth/helpers/snackbar_helpers.dart';
 import 'package:sample_pwa/counts/data/count_providers.dart';
+import 'package:sample_pwa/local/database.dart';
 import 'package:sample_pwa/local/prefs.dart';
+import 'package:sample_pwa/local/shared_database_providers.dart';
 import 'package:sample_pwa/location/location_providers.dart';
 import 'package:sample_pwa/location/location_service.dart';
+import 'package:sample_pwa/users/user_list_page.dart';
 import 'package:simple_web_camera/simple_web_camera.dart';
 
 class CountPage extends HookConsumerWidget {
@@ -76,6 +79,15 @@ class CountPage extends HookConsumerWidget {
                 'Current Lat:${currentLat.value} & Lng:${currentLng.value}',
               )
             },
+            const SizedBox(width: double.infinity, height: 16.0),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UserListPage()),
+              ),
+              label: const Text('User List Page'),
+              icon: const Icon(Icons.touch_app),
+            ),
             Text(
               'Your login token is ${loginToken.value}',
             ),
@@ -90,7 +102,15 @@ class CountPage extends HookConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider.notifier).increment(),
+        onPressed: () async {
+          ref.read(counterProvider.notifier).increment();
+          final count = ref.read(counterProvider);
+          final database = ref.read(sharedDatabaseProvider);
+          await database.into(database.users).insert(UsersCompanion.insert(
+                name: 'User count saved $count',
+              ));
+          SnackBarHelpers.showSnackBar(context, 'Saved user count!');
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
