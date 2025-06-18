@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sample_pwa/ai/query_ai_page.dart';
 import 'package:sample_pwa/auth/helpers/snackbar_helpers.dart';
 import 'package:sample_pwa/counts/data/count_providers.dart';
 import 'package:sample_pwa/local/database.dart';
@@ -101,18 +102,37 @@ class CountPage extends HookConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          ref.read(counterProvider.notifier).increment();
-          final count = ref.read(counterProvider);
-          final database = ref.read(sharedDatabaseProvider);
-          await database.into(database.users).insert(UsersCompanion.insert(
-                name: 'User count saved $count',
-              ));
-          SnackBarHelpers.showSnackBar(context, 'Saved user count!');
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => QueryAiPage()),
+              );
+            },
+            tooltip: 'Query-AI',
+            heroTag: 'one',
+            child: const Icon(Icons.question_answer_rounded),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () async {
+              ref.read(counterProvider.notifier).increment();
+              final count = ref.read(counterProvider);
+              final database = ref.read(sharedDatabaseProvider);
+              await database.into(database.users).insert(UsersCompanion.insert(
+                    name: 'User count saved $count',
+                  ));
+              SnackBarHelpers.showSnackBar(context, 'Saved user count!');
+            },
+            tooltip: 'Increment',
+            heroTag: 'two',
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
