@@ -60,3 +60,4 @@ app.*.map.json
 # Avoid commiting generated dart files
 *.g.dart
 *.freezed.dart
+lib/firebase_options.dart
