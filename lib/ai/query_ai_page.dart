@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sample_pwa/ai/ai_providers.dart';
+import 'package:sample_pwa/ai/data/ai_models.dart';
 import 'package:sample_pwa/common_widgets/message_view.dart';
 
 class QueryAiPage extends HookConsumerWidget {
@@ -9,7 +11,7 @@ class QueryAiPage extends HookConsumerWidget {
 
   QueryAiPage({super.key});
 
-  var responseList = List<String>.empty(growable: true);
+  final responseList = List<PromptResponse>.empty(growable: true);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,9 +20,17 @@ class QueryAiPage extends HookConsumerWidget {
 
     return Scaffold(
       body: ref.watch(generateContentStreamProvider(queryPrompt.value)).when(
-        data: (list) {
-          print('list ${list.length}');
-          responseList.addAll(list);
+        data: (value) {
+          print('Value - ${value}');
+          if (value.promptResult.isNotEmpty) {
+            final index =
+                responseList.indexWhere((e) => e.millis == value.millis);
+            if (index != -1) {
+              responseList[index] = value;
+            } else {
+              responseList.add(value);
+            }
+          }
 
           return ListView.builder(
             itemCount: responseList.length + 1,
@@ -57,7 +67,15 @@ class QueryAiPage extends HookConsumerWidget {
                 );
               }
               final item = responseList[index - 1];
-              return Card(child: ListTile(title: Text(item)));
+              return Card(
+                  child: ListTile(
+                      title: MarkdownBody(
+                data: item.promptResult,
+                styleSheet:
+                    MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                  p: const TextStyle(fontSize: 14),
+                ),
+              )));
             },
           );
         },

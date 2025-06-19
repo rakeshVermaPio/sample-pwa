@@ -1,6 +1,7 @@
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sample_pwa/ai/data/ai_models.dart';
 
 part 'ai_providers.g.dart';
 
@@ -21,13 +22,16 @@ Future<GenerateContentResponse> generateContentResponse(
 }
 
 @riverpod
-Stream<List<String>> generateContentStream(Ref ref, String promptText) async* {
-  print('object-  $promptText');
+Stream<PromptResponse> generateContentStream(
+    Ref ref, String promptText) async* {
+  print('object- $promptText');
 
   final modelProvider = ref.watch(geminiFlashModelProvider);
-
+  final promptResponseEmpty = PromptResponse(
+    millis: DateTime.now().millisecondsSinceEpoch,
+      promptQuery: promptText, promptResult: '', promptDone: true);
   if (promptText.trim().isEmpty) {
-    yield <String>[];
+    yield promptResponseEmpty;
     return;
   }
 
@@ -36,10 +40,21 @@ Stream<List<String>> generateContentStream(Ref ref, String promptText) async* {
 
   print('stream- $responseStream');
 
-  var allRes = <String>[];
+  var promptResponse = promptResponseEmpty.copyWith(millis: DateTime.now().millisecondsSinceEpoch);
   await for (final event in responseStream) {
+    print(
+        'stream - for - ${event.usageMetadata} -> ${event.text} -> ${event.candidates.length}');
+    final candidates = event.candidates;
+    final promptDone =
+        candidates.any((e) => e.finishReason == FinishReason.stop);
     final value = event.text;
-    if (value != null && value.isNotEmpty) allRes = [...allRes, value];
-    yield allRes;
+    if (value != null && value.isNotEmpty) {
+      final promptResult = '${promptResponse.promptResult}$value';
+      promptResponse = promptResponse.copyWith(
+          promptQuery: promptText,
+          promptResult: promptResult,
+          promptDone: promptDone);
+      yield promptResponse;
+    }
   }
 }
